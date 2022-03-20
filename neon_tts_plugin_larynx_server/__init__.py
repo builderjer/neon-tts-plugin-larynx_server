@@ -57,7 +57,7 @@ class LarynxServerTTSPlugin(TTS):
                 'minaev': 'ru-ru/minaev-glow_tts',
                 'nathalie': 'nl/nathalie-glow_tts',
                 'nikolaev': 'ru-ru/nikolaev-glow_tts',
-                'northern_english_male': 'northern_english_male-glow_tts',
+                'northern_english_male': 'en-us/northern_english_male-glow_tts',
                 'pavoque': 'de-de/pavoque-glow_tts',
                 'rdh': 'nl/rdh-glow_tts',
                 'rebecca_braunert_plunkett': 'de-de/rebecca_braunert_plunkett-glow_tts',
@@ -75,12 +75,12 @@ class LarynxServerTTSPlugin(TTS):
                             "pitch": 0.5,
                             "rate": 0.5,
                             "vol": 1}
-        self.url = config.get("host", "http://ziggy.ziggyhome:5002")
-        self.vocoder = config.get("vocoder", "hifi_gan/universal_large")
-        self.noise = config.get("noise", 0.667)
+        self.url = config.get("host", "http://tts.neon.ai")
+        self.vocoder = config.get("vocoder", "hifi_gan/vctk_small")
+        self.noise = config.get("noise", 0.333)
         self.length = config.get("length", 1.0)
         self.denoiser = config.get("denoiser", 0.002)
-        self.voice = config.get("voice", 'northern_english_male-glow_tts')
+        self.voice = config.get("voice", 'mary_ann')
         if self.voice in self.voice2id:
             self.voice = self.voice2id[self.voice]
         super(LarynxServerTTSPlugin, self).__init__(
