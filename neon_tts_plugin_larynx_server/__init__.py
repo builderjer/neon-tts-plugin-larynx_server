@@ -57,7 +57,7 @@ class LarynxServerTTSPlugin(TTS):
                 'minaev': 'ru-ru/minaev-glow_tts',
                 'nathalie': 'nl/nathalie-glow_tts',
                 'nikolaev': 'ru-ru/nikolaev-glow_tts',
-                'northern_english_male': 'en-us/northern_english_male-glow_tts',
+                'northern_english_male': 'northern_english_male-glow_tts',
                 'pavoque': 'de-de/pavoque-glow_tts',
                 'rdh': 'nl/rdh-glow_tts',
                 'rebecca_braunert_plunkett': 'de-de/rebecca_braunert_plunkett-glow_tts',
@@ -75,16 +75,17 @@ class LarynxServerTTSPlugin(TTS):
                             "pitch": 0.5,
                             "rate": 0.5,
                             "vol": 1}
-        super(LarynxServerTTSPlugin, self).__init__(
-            lang, config, LarynxServerTTSPluginValidator(self), 'wav')
-        self.url = config.get("host", "http://tts.neon.ai")
-        self.vocoder = config.get("vocoder", "hifi_gan/vctk_small")
-        self.noise = config.get("noise", 0.333)
+        self.url = config.get("host", "http://ziggy.ziggyhome:5002")
+        self.vocoder = config.get("vocoder", "hifi_gan/universal_large")
+        self.noise = config.get("noise", 0.667)
         self.length = config.get("length", 1.0)
         self.denoiser = config.get("denoiser", 0.002)
-        self.voice = config.get("voice", 'mary_ann')
+        self.voice = config.get("voice", 'northern_english_male-glow_tts')
         if self.voice in self.voice2id:
             self.voice = self.voice2id[self.voice]
+        super(LarynxServerTTSPlugin, self).__init__(
+            lang, config, LarynxServerTTSPluginValidator(self), 'wav')
+
 
     def get_voices(self):
         url = join(self.url, "api", "voices")
@@ -107,14 +108,14 @@ class LarynxServerTTSPlugin(TTS):
         if not sentence:
             return wav_file, None
         url = join(self.url, "api", "tts")
-        wav = requests.get(url,
-                           params={"text": sentence,
-                                   "voice": self.voice,
-                                   "vocoder": self.vocoder,
-                                   "lengthScale": self.length,
-                                   "noiseScale": self.noise,
-                                   "inlinePronunciations": False,
-                                   "denoiserStrength": self.denoiser}).content
+        params={"text": sentence,
+                "voice": self.voice,
+                "vocoder": self.vocoder,
+                "lengthScale": self.length,
+                "noiseScale": self.noise,
+                "inlinePronunciations": False,
+                "denoiserStrength": self.denoiser}
+        wav = requests.get(url, params).content
         with open(wav_file, "wb") as f:
             f.write(wav)
         return wav_file, None  # No phonemes
